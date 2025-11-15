@@ -1,0 +1,105 @@
+name: Recovery Build
+permissions:
+  contents: write
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+    - name: Display Run Parameters
+      run: |
+        echo "::group::Build Configuration"
+        echo "Manifest URL: https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni"
+        echo "Manifest Branch: twrp-9.0"
+        echo "Device Tree URL: ${{ github.repositoryUrl }}"
+        echo "Device Tree Branch: ${{ github.ref_name }}"
+        echo "Device Path: device/sprd/uws6152_1h10_go"
+        echo "Device Name: uws6152_1h10_go"
+        echo "Makefile Name: omni_uws6152_1h10_go"
+        echo "Build Target: recovery"
+        echo "::endgroup::"
+
+    - name: Check Out
+      uses: actions/checkout@v3
+
+    - name: Cleanup
+      uses: rokibhasansagar/slimhub_actions@main
+
+    - name: Prepare the environment
+      run: |
+        sudo apt update
+        sudo apt -y upgrade
+        sudo apt -y install gperf gcc-multilib gcc-10-multilib g++-multilib g++-10-multilib libc6-dev lib32ncurses5-dev x11proto-core-dev libx11-dev tree lib32z-dev libgl1-mesa-dev libxml2-utils xsltproc bc ccache lib32readline-dev lib32z1-dev liblz4-tool libncurses5-dev libsdl1.2-dev libwxgtk3.0-gtk3-dev libxml2 lzop pngcrush schedtool squashfs-tools imagemagick libbz2-dev lzma ncftp qemu-user-static libstdc++-10-dev libncurses5 python3
+
+    - name: Install OpenJDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'zulu'
+        java-version: '8'
+
+    - name: Install repo
+      run: |
+        mkdir ~/bin
+        curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+        chmod a+x ~/bin/repo
+        sudo ln -sf ~/bin/repo /usr/bin/repo
+      
+    - name: Initialize repo
+      run: |
+        mkdir workspace
+        cd workspace
+        echo "workspace-folder=$(pwd)" >> $GITHUB_OUTPUT
+        git config --global user.name "azwhikaru"
+        git config --global user.email "azwhikaru+37921907@github.com"
+        repo init --depth=1 -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni -b twrp-9.0
+      id: pwd
+          
+    - name: Repo Sync
+      run: |
+        repo sync -j$(nproc --all) --force-sync
+      working-directory: workspace
+      
+    - name: Clone device tree
+      run: |
+        git clone ${{ github.repositoryUrl }} -b ${{ github.ref_name }} ./device/sprd/uws6152_1h10_go
+      working-directory: ${{ steps.pwd.outputs.workspace-folder }}
+
+    - name: Set Swap Space
+      uses: pierotofy/set-swap-space@master
+      with:
+        swap-size-gb: 12
+
+    - name: Switch to Python2
+      run: |
+        sudo apt -y install python2
+        sudo rm -rf /usr/bin/python
+        sudo ln -s /usr/bin/python2 /usr/bin/python
+      continue-on-error: true
+
+    - name: Building recovery
+      run: |
+        source build/envsetup.sh
+        export ALLOW_MISSING_DEPENDENCIES=true
+        lunch omni_uws6152_1h10_go-eng && make clean && make recoveryimage -j$(nproc --all)
+      working-directory: ${{ steps.pwd.outputs.workspace-folder }}
+
+    - name: Upload to Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: | 
+          workspace/out/target/product/uws6152_1h10_go/recovery.img
+          workspace/out/target/product/uws6152_1h10_go/*.zip
+          workspace/out/target/product/uws6152_1h10_go/*vendor*.img
+        name: uws6152_1h10_go-${{ github.run_id }}
+        tag_name: build-${{ github.run_id }}
+        body: |
+          Build completed successfully!
+          Device: uws6152_1h10_go
+          Branch: ${{ github.ref_name }}
+          Triggered by: ${{ github.actor }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
