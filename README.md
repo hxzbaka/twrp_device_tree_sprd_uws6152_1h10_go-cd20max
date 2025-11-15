@@ -37,5 +37,5 @@ make recoveryimage -j$(nproc --all)
 ## To use it:
 
 ```
-fastboot flash vendor_boot out/target/product/dove_evb4/vendor_boot.img
+fastboot flash recovery out/target/product/uws6152_1h10_go/recovery.img
 ```
