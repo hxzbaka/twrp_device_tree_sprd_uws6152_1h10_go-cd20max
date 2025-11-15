@@ -1,10 +1,41 @@
-# Android device tree for BiDeZhi CD_Watch_A (uws6152_1h10_go)
+### TWRP device tree for CD20MAX (uws6152_1h10_go)
+
+=========================================
+
+The CD20MAX (codenamed _"uws6152_1h10_go"_) is a smartwatch produced by BiDeZhi.
+
+It was released in 2025.
+
+## Work
+| function    | status |
+|---------|------|
+| SCREEN  | ✓    |
+| TOUCH   | ✓    |
+| ADB     | ✓    |
+| MTP     | ✓    |
+| FBE     | ✗    |
+
+## Compile
+
+First checkout minimal twrp with aosp tree:
 
 ```
-#
-# Copyright (C) 2025 The Android Open Source Project
-# Copyright (C) 2025 SebaUbuntu's TWRP device tree generator
-#
-# SPDX-License-Identifier: Apache-2.0
-#
+repo init --depth=1 -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni -b twrp-9.0
+repo sync -j$(nproc --all)
+```
+
+Finally execute these:
+
+```
+source build/envsetup.sh
+lunch twrp_uws6152_1h10_go-eng
+make recoveryimage -j$(nproc --all)
+```
+## Action
+[RECOVERY BUILD](.github/workflows/build.yml)
+
+## To use it:
+
+```
+fastboot flash vendor_boot out/target/product/dove_evb4/vendor_boot.img
 ```
