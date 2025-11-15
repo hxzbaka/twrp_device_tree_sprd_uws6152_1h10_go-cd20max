@@ -1,0 +1,39 @@
+#add for board init.rc for recovery mode
+on post-fs
+
+    symlink /prodnv /mnt/vendor
+    symlink /vendor/lib64/hw/keystore.sprdtrusty.so /vendor/lib64/hw/keystore.ums312.so
+
+# Add By hxzbaka sprd FBE Fixed
+
+service keymaster-3-0 /vendor/bin/hw/android.hardware.keymaster@3.0-service
+    seclabel u:r:recovery:s0
+    user root
+    group root drmrpc
+    disabled
+
+service gatekeeper-1-0 /vendor/bin/hw/android.hardware.gatekeeper@1.0-service
+    disabled
+    user root
+    group root
+    seclabel u:r:recovery
+
+on property:crypto.ready=1
+    start keymaster-3-0
+    start gatekeeper-1-0
+
+on property:crypto.ready=0
+    stop gatekeeper-1-0
+    stop keymaster-3-0
+
+on property:ro.crypto.state=unsupported
+    stop mobicore
+    stop keymaster-3-0
+
+on property:ro.crypto.state=unencrypted
+    stop gatekeeper-1-0
+    stop keymaster-3-0
+
+on property:twrp.decrypt.done=true && property:twrp.all.users.decrypted=true
+    stop gatekeeper-1-0
+    stop keymaster-3-0
