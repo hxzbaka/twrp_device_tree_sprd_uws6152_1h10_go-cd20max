@@ -15,7 +15,7 @@ jobs:
         echo "::group::Build Configuration"
         echo "Manifest URL: https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni"
         echo "Manifest Branch: twrp-9.0"
-        echo "Device Tree URL: ${{ github.repositoryUrl }}"
+        echo "Device Tree URL: https://github.com/${{ github.repository }}"
         echo "Device Tree Branch: ${{ github.ref_name }}"
         echo "Device Path: device/sprd/uws6152_1h10_go"
         echo "Device Name: uws6152_1h10_go"
@@ -65,7 +65,7 @@ jobs:
       
     - name: Clone device tree
       run: |
-        git clone ${{ github.repositoryUrl }} -b ${{ github.ref_name }} ./device/sprd/uws6152_1h10_go
+        git clone https://github.com/${{ github.repository }} -b ${{ github.ref_name }} ./device/sprd/uws6152_1h10_go
       working-directory: ${{ steps.pwd.outputs.workspace-folder }}
 
     - name: Set Swap Space
