@@ -32,7 +32,7 @@ lunch twrp_uws6152_1h10_go-eng
 make recoveryimage -j$(nproc --all)
 ```
 ## Action
-[RECOVERY BUILD](.github/workflows/build.yml)
+[RECOVERY BUILD](.github/actions/workflows/build.yml)
 
 ## To use it:
 
