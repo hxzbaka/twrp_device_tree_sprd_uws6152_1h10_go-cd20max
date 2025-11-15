@@ -17,7 +17,7 @@ It was released in 2025.
 
 ## Compile
 
-First checkout minimal twrp with aosp tree:
+First checkout minimal twrp with omni tree:
 
 ```
 repo init --depth=1 -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni -b twrp-9.0
