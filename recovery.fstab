@@ -34,4 +34,4 @@
 /product             ext4     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/product          flags=display=product
 /data                f2fs     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/userdata         flags=display=data;fileencryption=aes-256-xts
 /cache               ext4     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/cache            flags=display=cache
-/prodnv          ext4     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/prodnv           flags=display=vendor
+/prodnv          ext4     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/prodnv           flags=display=prodnv
