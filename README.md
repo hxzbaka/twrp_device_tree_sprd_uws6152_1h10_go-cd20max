@@ -28,7 +28,7 @@ Finally execute these:
 
 ```
 source build/envsetup.sh
-lunch twrp_uws6152_1h10_go-eng
+lunch omni_uws6152_1h10_go-eng
 make recoveryimage -j$(nproc --all)
 ```
 ## Action
