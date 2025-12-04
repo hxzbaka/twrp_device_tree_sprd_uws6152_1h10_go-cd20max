@@ -6,6 +6,8 @@ The CD20MAX (codenamed _"uws6152_1h10_go"_) is a smartwatch produced by BiDeZhi.
 
 It was released in 2025.
 
+Data decryption thanks Atlas
+
 ## Work
 | function    | status |
 |---------|------|
@@ -39,5 +41,3 @@ make recoveryimage -j$(nproc --all)
 ```
 fastboot flash recovery out/target/product/uws6152_1h10_go/recovery.img
 ```
-
-Data decryption thanks Atlas
