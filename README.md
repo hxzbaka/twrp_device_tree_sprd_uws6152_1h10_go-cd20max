@@ -13,7 +13,7 @@ It was released in 2025.
 | TOUCH   | ✓    |
 | ADB     | ✓    |
 | MTP     | ✓    |
-| FBE     | ✗    |
+| FBE     | ✓    |
 
 ## Compile
 
@@ -39,3 +39,5 @@ make recoveryimage -j$(nproc --all)
 ```
 fastboot flash recovery out/target/product/uws6152_1h10_go/recovery.img
 ```
+
+Data decryption thanks Atlas
